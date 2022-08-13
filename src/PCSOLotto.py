@@ -252,11 +252,11 @@ class PCSOLotto:
     ) -> dict:
         '''
         Args:
-        - start_date    (str)  : date to start searching            | YYYY/MM/DD        | Required
-        - end_date      (str)  : date to end searching              | YYYY/MM/DD        | Required
-        - days          (int)  : days to select                     | Sun, Mon, Tue ... | Default = All Days, Optional
-        - games         (list) : lotto games to search              | EZ2, 6/42, 6/55   | Default = All Games, Optional
-        - peso_sign     (bool) : prefix a peso sign in the jackpot  | True or False     | Default = True, Optional
+        - start_date    (str)       : date to start searching                       | YYYY/MM/DD        | Required
+        - end_date      (str)       : date to end searching                         | YYYY/MM/DD        | Required
+        - days          list(str)   : days to select                                | Sun, Mon, Tue ... | Default = All Days, Optional
+        - games         list(str)   : lotto games to search                         | EZ2, 6/42, 6/55   | Default = All Games, Optional
+        - peso_sign     (bool)      : to prefix a peso sign in the jackpot, or not  | True or False     | Default = True, Optional
 
         Examples:
         >>> # Search for results from Aug 1 2022 to Aug 10 2022
@@ -269,7 +269,7 @@ class PCSOLotto:
         >>> # from Aug 1 2022 to Aug 10 2022
         >>> lotto.results('2022/08/01', '2022/08/10', ['6/58', '6/55', '6/42'])
         >>>
-        >>> # Search for results every Mon, Tue and Wed
+        >>> # Search for results every Mon, Wed and Fri
         >>> # from Aug 1 2022 to Aug 10 2022
         >>> lotto.results('2022/08/01', '2022/08/10', ['Mon', 'Wed', 'Fri'])
         '''

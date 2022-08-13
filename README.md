@@ -13,22 +13,16 @@ Or by clicking the `Code` button in this page, then `Download ZIP` then extract.
 
 Then you can copy the `PCSOLotto.py` beside your python project where you wanna use it with.
 
-### Import
-
-```python
-from PCSOLotto import PCSOLotto
-
-# import pretty print
-# for pretty printing of returned dictionary 
-from pprint import pprint 
-
-# initiate an object from the class
-lotto = PCSOLotto()
-```
-
 ## Simple Usage Examples
 
 ```python
+from PCSOLotto import PCSOLotto
+from pprint import pprint # for pretty printing of returned dictionary 
+
+# initiate an object from the class
+lotto = PCSOLotto()
+
+
 # returns all lottery results today as dictionary
 # only works 10PM onwards as that is when PCSO updates their website
 pprint(lotto.results_today(), indent=2)
@@ -47,7 +41,16 @@ pprint(lotto.results_latest(), indent=2)
 
 Methods `results_today()`, `results_yesterday()` and `results_latest()` all have an optional `games` parameter where you can customize what lottery games get returned.
 
+To match a specific game, we have to use an alias or the whole name of the lottery game. Refer to [Table-of-Games](#Table-of-Games) for these aliases.
+
 ```python
+from PCSOLotto import PCSOLotto
+from pprint import pprint # for pretty printing of returned dictionary 
+
+# initiate an object from the class
+lotto = PCSOLotto()
+
+
 # returns all EZ2 results yesterday
 pprint(
     lotto.results_today(
@@ -83,11 +86,18 @@ pprint(
 
 ## More Advanced Usage Examples
 
-Methods described in Simple & Advanced Usage all use a method underneath called `results()` which takes five parameters that are described in the API Reference.
+Methods described in Simple & Advanced Usage all use a method underneath called `results()` which takes five parameters that are described in the [API-Reference](#API-Reference)
 
 You can use this method directly if you want to customize the results.
 
 ```python
+from PCSOLotto import PCSOLotto
+from pprint import pprint # for pretty printing of returned dictionary 
+
+# initiate an object from the class
+lotto = PCSOLotto()
+
+
 # Search for results from Aug 1 2022 to Aug 10 2022
 # Note: the only accepted date format is YYYY/MM/DD
 pprint(
@@ -118,3 +128,41 @@ pprint(
     indent=2
 )
 ```
+
+# API-Reference
+
+| Parameter    | Type     | Format       | Description                |
+| :--------    | :------- | :------------|:------------------------- |
+| `start_date` | `string` | YYYY/MM/DD   |**Required**. date to start searching |
+| `end_date`   | `string` | YYYY/MM/DD   |**Required**. date to end searching |
+| `days`       | `list(string)` | ['Sun', 'Mon'] ... | **Optional**. days to select |
+| `games`      | `list(string)` | ['EZ2', 'Suetres'] ... | **Optional**. games to select |
+| `peso_sign`  | `bool`   | `True` or `False` | **Optional**. to prefix a peso sign in the jackpot, or not |
+
+
+
+
+# Table-of-Games
+
+Note: 
+Using "Suertres" alone will match all draws that happen in 11AM, 4M & 9M 
+
+So if you only want the 4PM draw, use "Suertres Lotto 4PM" instead. The same concept applies for EZ2.
+
+| Alias               	| Game Full Name      	|
+|---------------------	|---------------------	|
+| 6/58                	| Ultra Lotto 6/58    	|
+| 6/55                	| Grand Lotto 6/55    	|
+| 6/49                	| Super Lotto 6/49    	|
+| 6/45                	| Mega Lotto 6/45     	|
+| 6/42                	| Lotto 6/42          	|
+| 6Digit              	| 6Digit              	|
+| 4Digit              	| 4Digit              	|
+| Suetres             	| Suetres             	|
+| Suertres Lotto 11AM 	| Suertres Lotto 11AM 	|
+| Suertres Lotto 4PM  	| Suertres Lotto 4PM  	|
+| Suertres Lotto 9PM  	| Suertres Lotto 9PM  	|
+| EZ2                 	| EZ2 / 2Digit        	|
+| EZ2 Lotto 11AM      	| EZ2 Lotto 11AM      	|
+| EZ2 Lotto 4PM       	| EZ2 Lotto 4PM       	|
+| EZ2 Lotto 9PM       	| EZ2 Lotto 9PM       	|

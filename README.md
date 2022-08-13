@@ -145,7 +145,7 @@ pprint(
 # Table-of-Games
 
 Note: 
-Using "Suertres" alone will match all draws that happen in 11AM, 4M & 9M 
+Using "Suertres" alone will match all draws that happen in 11AM, 4PM & 9PM 
 
 So if you only want the 4PM draw, use "Suertres Lotto 4PM" instead. The same concept applies for EZ2.
 

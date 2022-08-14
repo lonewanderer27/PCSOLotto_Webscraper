@@ -6,7 +6,7 @@ PCSOLotto (Webscraper) is a Python class library for webscraping lottery results
 
 Use git on your local machine to `git clone` this repository:
 ```bash
-git clone https://github.com/lonewanderer27/PCSOLotto-Webscraper
+git clone https://github.com/lonewanderer27/PCSOLotto_Webscraper
 ```
 
 Or by clicking the `Code` button in this page, then `Download ZIP` then extract.

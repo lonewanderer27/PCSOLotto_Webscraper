@@ -101,14 +101,19 @@ lotto = PCSOLotto()
 # Search for results from Aug 1 2022 to Aug 10 2022
 # Note: the only accepted date format is YYYY/MM/DD
 pprint(
-    lotto.results('2022/08/01', '2022/08/10'),
+    lotto.results(
+        start_date='2022/08/01', 
+        end_date='2022/08/10'),
     indent=2
 )
 
 
 # Search for 6/58 results from Aug 1 2022 to Aug 10 2022
 pprint(
-    lotto.results('2022/08/01', '2022/08/10', ['6/58']),
+    lotto.results(
+        start_date='2022/08/01', 
+        end_date='2022/08/10', 
+        games=['6/58']),
     indent=2
 )
 
@@ -116,7 +121,10 @@ pprint(
 # Search for 6/58, 6/55 & 6/42 results
 # from Aug 1 2022 to Aug 10 2022
 pprint(
-    lotto.results('2022/08/01', '2022/08/10', ['6/58', '6/55', '6/42']),
+    lotto.results(
+        start_date='2022/08/01', 
+        end_date='2022/08/10', 
+        games=['6/58', '6/55', '6/42']),
     indent=2
 )
 
@@ -124,7 +132,10 @@ pprint(
 # Search for results every Mon, Wed, Fri
 # from Aug 1 2022 to Aug 10 2022
 pprint(
-    lotto.results('2022/08/01', '2022/08/10', ['Mon', 'Wed', 'Fri']),
+    lotto.results(
+        start_date='2022/08/01', 
+        end_date='2022/08/10', 
+        days=['Mon', 'Wed', 'Fri']),
     indent=2
 )
 ```

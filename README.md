@@ -88,7 +88,7 @@ pprint(
 
 Methods described in Simple & Advanced Usage all use a method underneath called `results()` which takes five parameters that are described in the [API-Reference](#API-Reference)
 
-You can use this method directly if you want to customize the results.
+You can use this method directly if you want to customize the results date.
 
 ```python
 from PCSOLotto import PCSOLotto

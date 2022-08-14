@@ -54,21 +54,21 @@ lotto = PCSOLotto()
 # returns all EZ2 results yesterday
 pprint(
     lotto.results_yesterday(
-        games=['EZ2'])
+        games=['EZ2']),
     indent=2)
 
 
 # returns all EZ2, Suertres & 6Digit results yesterday
 pprint(
     lotto.results_yesterday(
-        games=['EZ2', 'Suertres', '6Digit'])
+        games=['EZ2', 'Suertres', '6Digit']),
     indent=2)
 
 
 # returns all 6/55 & 6/49 results yesterday
 pprint(
     lotto.results_yesterday(
-        games=['6/55', '6/49'])
+        games=['6/55', '6/49']),
     indent=2)
 ```
 
@@ -79,8 +79,8 @@ And by default all of three methods we used prefix the jackpot price with ₱ si
 # but with ₱ sign omitted
 pprint(
     lotto.results_yesterday(
-        games=['6/55', '6/49']),
-        peso_sign=False
+        games=['6/55', '6/49'], 
+        peso_sign=False),
     indent=2)
 ```
 

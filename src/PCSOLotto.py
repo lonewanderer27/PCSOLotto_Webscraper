@@ -34,16 +34,16 @@ class PCSOLotto:
         '''Retrieves the BeautifulSoup4 object that contains the page html'''
 
         r = requests.get(self.__link)
-        self.__bsoup4 = BeautifulSoup(r.text, 'html.parser')
-        return self.__bsoup4
+        self.__soup = BeautifulSoup(r.text, 'html.parser')
+        return self.__soup
 
     def __get_asp_hidden_vals(self) -> dict:
         '''Retrieves ASP Hidden Values used for authentication / cookie'''
 
-        self.__viewstate = self.__bsoup4.find(id='__VIEWSTATE')['value']
-        self.__viewstategenerator = self.__bsoup4.find(
+        self.__viewstate = self.__soup.find(id='__VIEWSTATE')['value']
+        self.__viewstategenerator = self.__soup.find(
             id='__VIEWSTATEGENERATOR')['value']
-        self.__eventvalidation = self.__bsoup4.find(
+        self.__eventvalidation = self.__soup.find(
             id='__EVENTVALIDATION')['value']
         return {
             'VIEWSTATE': self.__viewstate,
@@ -84,8 +84,8 @@ class PCSOLotto:
         '''
 
         r = requests.post(self.__link, data)
-        self.__bsoup4 = BeautifulSoup(r.text, 'html.parser')
-        return self.__bsoup4
+        self.__soup = BeautifulSoup(r.text, 'html.parser')
+        return self.__soup
 
     def __get_result_rows_raw(self) -> list:
         '''
@@ -93,7 +93,7 @@ class PCSOLotto:
         '''
 
         # find all the rows, skip the first row as that's the table header
-        rows = self.__bsoup4.find_all('tr')[1:]
+        rows = self.__soup.find_all('tr')[1:]
         self.__result_rows_raw = []
         for row in rows:
             cells = row.findChildren('td')
@@ -197,7 +197,7 @@ class PCSOLotto:
             date1 = datetime.strptime(date1, '%Y/%m/%d')
             date2 = datetime.strptime(date2, '%Y/%m/%d')
             return [date1 + timedelta(days=x) for x in range((date2-date1).days + 1)]
-            
+    
         def convert_daterange(date):
             return str(date.strftime("%Y/%m/%d"))
 

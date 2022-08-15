@@ -1,7 +1,12 @@
+#!/usr/bin/env python
+
 from bs4 import BeautifulSoup
 import calendar
 from datetime import datetime, timedelta
 import requests
+import argparse
+from prettytable import PrettyTable
+import json
 
 
 class PCSOLotto:
@@ -10,9 +15,15 @@ class PCSOLotto:
         self,
         link: str = 'https://www.pcso.gov.ph/SearchLottoResult.aspx'
     ):
-        self.__result_rows_raw = []
-        self.__result_rows = {}
-        self.result_list_str = []
+        self.__results_raw = []
+        self.results_dict = {}
+        self.results_str_list = []
+        self.results_table = PrettyTable(
+            ['Lotto Game',
+             'Combinations',
+             'Draw Date',
+             'Jackpot (₱)',
+             'Winners'])
         self.__link = link
         self.games_list = {
             58: 'Ultra Lotto 6/58',
@@ -94,12 +105,12 @@ class PCSOLotto:
 
         # find all the rows, skip the first row as that's the table header
         rows = self.__soup.find_all('tr')[1:]
-        self.__result_rows_raw = []
+        self.__results_raw = []
         for row in rows:
             cells = row.findChildren('td')
-            self.__result_rows_raw.append(cells)
+            self.__results_raw.append(cells)
 
-        return self.__result_rows_raw
+        return self.__results_raw
 
     def __filter_result(self, result: dict) -> bool:
         '''
@@ -125,7 +136,7 @@ class PCSOLotto:
 
     def __convert_raw_result_rows(self) -> dict:
         '''
-        Converts all the raw bs4 rows into list of dictionaries.
+        Converts bs4 rows into output variables.
         '''
 
         def __strip_text(row):
@@ -136,11 +147,11 @@ class PCSOLotto:
 
         def __create_date_key(date):
             try:
-                self.__result_rows[date]
+                self.results_dict[date]
             except KeyError:
-                self.__result_rows[date] = {}
+                self.results_dict[date] = {}
 
-        for cells in self.__result_rows_raw:
+        for cells in self.__results_raw:
             # strip texts around of the text row
             cells = list(map(__strip_text, cells))
 
@@ -170,20 +181,27 @@ class PCSOLotto:
             }
 
             if self.__filter_result(result):
-
+                
                 # create the date key if it's empty
                 __create_date_key(cells[2])
 
-                # insert the result
-                self.__result_rows[cells[2]][cells[0]] = result
+                # insert the result to results_dict
+                self.results_dict[cells[2]][cells[0]] = result
 
+                # convert combination list to string
                 combinations_str = f'{"-".join(str(n) for n in cells[1])}'
 
-                self.result_list_str.append(
+                # append the result to results_list_str
+                self.results_str_list.append(
                     f"{cells[0]}\nResult: {combinations_str}\nDraw Date: {cells[2]}\nJackpot: {cells[3]}\nWinners: {cells[4]}"
                 )
 
-        return self.__result_rows
+                # append results to results_table
+                self.results_table.add_row(
+                    [cells[0], combinations_str, cells[2], cells[3], cells[4]]
+                )
+
+        return self.results_dict
 
     def __vali_date(self, date_str: str):
         return datetime.strptime(date_str, '%Y/%m/%d')
@@ -197,7 +215,7 @@ class PCSOLotto:
             date1 = datetime.strptime(date1, '%Y/%m/%d')
             date2 = datetime.strptime(date2, '%Y/%m/%d')
             return [date1 + timedelta(days=x) for x in range((date2-date1).days + 1)]
-    
+
         def convert_daterange(date):
             return str(date.strftime("%Y/%m/%d"))
 
@@ -208,23 +226,6 @@ class PCSOLotto:
                                 datesb, "%Y/%m/%d"
                                 ).strftime('%a') in self.__days:
                 return True
-
-        # sdate = date(
-        #     self.__start_year,
-        #     self.__start_month,
-        #     self.__start_day
-        #     )
-        # edate = date(
-        #     self.__end_year,
-        #     self.__end_month,
-        #     self.__end_day
-        # )
-
-        # Generate dates between the start & end date
-        # self.__dates_between = pandas.date_range(
-        #     sdate, edate,
-        #     freq='d'
-        # ).strftime("%Y/%m/%d").tolist()
 
         sdate = f"{self.__start_year}/{self.__start_month}/{self.__start_day}"
         edate = f"{self.__end_year}/{self.__end_month}/{self.__end_day}"
@@ -288,23 +289,29 @@ class PCSOLotto:
         self.__days = days
         self.__peso_sign = peso_sign
 
+        # Reset variables that might have a previous value
+        self.__results_raw = []
+        self.results_dict = {}
+        self.results_str_list = []
+        self.results_table = PrettyTable(
+            ['Lotto Game',
+             'Combinations',
+             'Draw Date',
+             'Jackpot (₱)',
+             'Winners'])
+
         # Generate dates between start date & end date
         # And optionally filter it based on the weekday
         self.__dates_between = {}
         self.__gen_dates_between()
-
-        # Empty variables that might have a previous value
-        self.__result_rows_raw = []
-        self.__result_rows = {}
-        self.result_list_str = []
 
         self.__download_page()               # download the webpage
         self.__get_asp_hidden_vals()         # get asp hidden vals for auth
         data = self.__construct_post_data()  # construct data that we'll POST
         self.__post_page(data)               # post data and get results
         self.__get_result_rows_raw()         # get the bs4 table rows
-        self.__convert_raw_result_rows()     # convert each rows into dict
-        return self.__result_rows
+        self.__convert_raw_result_rows()     # convert rows to output variables
+        return self.results_dict
 
     def results_today(
         self,
@@ -367,3 +374,105 @@ class PCSOLotto:
             games=games,
             peso_sign=peso_sign
             )
+
+
+def execute_as_script():
+    '''
+    Allows the program to be executed in a command line environment.
+
+    It parses the arguments / parameters then passes it to the constructor
+    which then executes the extraction.
+
+    Do not use this function in a program,
+    construct an object from PCSOLotto class
+    then execute one of the results method.
+    '''
+
+    if __name__ == '__main__':
+
+        parser = argparse.ArgumentParser(
+                        description='CLI tool for web scraping lottery '
+                                    'results from the PCSO website',
+                        formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+
+        parser.add_argument(
+            'start_date',
+            type=str,
+            help='date to start searching. Format: YYYY/MM/DD')
+        parser.add_argument(
+            'end_date',
+            type=str,
+            help='date to end searching. Format: YYYY/MM/DD')
+        parser.add_argument(
+            '-d',
+            '--days',
+            type=str,
+            nargs='*',
+            help='days to select',
+            default=None)
+        parser.add_argument(
+            '-g',
+            '--games',
+            type=str,
+            nargs='*',
+            help='lotto games to search',
+            default=None)
+        parser.add_argument(
+            '-p',
+            '--peso_sign',
+            type=lambda x: (str(x).lower() == 'true'),
+            default=True,
+            help='to prefix a peso sign in the jackpot, or not')
+        parser.add_argument(
+            '-c',
+            '--csv',
+            type=str,
+            default=None,
+            help='csv file to output the results to'
+        )
+        parser.add_argument(
+            '-j',
+            '--json',
+            type=str,
+            default=None,
+            help='json file to output the results to'
+        )
+
+        args = parser.parse_args()
+        config = vars(args)
+
+        lotto = PCSOLotto()
+        lotto.results(
+            start_date=config['start_date'],
+            end_date=config['end_date'],
+            days=config['days'],
+            games=config['games'],
+            peso_sign=config['peso_sign']
+        )
+
+        # print the results in table format
+        print(lotto.results_table)
+
+        # write results to csv file
+        if config['csv']:
+            with open(config['csv'], 'w', newline='') as csv_file:
+                csv_file.write(lotto.results_table.get_csv_string())
+                csv_file.close()
+
+        # write results to json file
+        if config['json']:
+            with open(config['json'], 'w') as json_file:
+                json.dump(
+                    lotto.results_dict,
+                    json_file,
+                    indent=4,
+                    ensure_ascii=False)
+                json_file.close()
+
+    else:
+
+        print(f'{__name__}: {execute_as_script.__doc__}')
+        return
+
+
+execute_as_script()

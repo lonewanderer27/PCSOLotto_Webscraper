@@ -63,10 +63,13 @@ By default, jackpot prices are prefixed with ₱ sign, you can disable that by a
 
 ## More Advanced Usage Examples
 
+Use -s --start_date to define the start date and -e --end_date to define the end date 
+
+These arguments cannot be used together with -t --results_today, -y --results_yesterday, -z --results_default_pcso
+
 ```bash
 # display results from Aug 1 2022 to Aug 10 2022
 # Note: the only accepted date format is YYYY/MM/DD
-
 ./PCSOLotto.py --start_date '2022/08/01' --end_date '2022/08/10'
 
 # display 6/58 results from Aug 1 2022 to Aug 10 2022

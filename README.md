@@ -1,6 +1,7 @@
 # PCSOLotto
 
-PCSOLotto (Webscraper) is a Python class library for webscraping lottery results from the [PCSO website](https://www.pcso.gov.ph/SearchLottoResult.aspx)
+PCSOLotto (Webscraper) is a Python program for webscraping lottery results from the [PCSO website](https://www.pcso.gov.ph/SearchLottoResult.aspx)
+Can be be both used in CLI and embedded in a python program.
 
 ## Installation
 

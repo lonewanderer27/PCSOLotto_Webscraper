@@ -181,7 +181,7 @@ class PCSOLotto:
             }
 
             if self.__filter_result(result):
-                
+
                 # create the date key if it's empty
                 __create_date_key(cells[2])
 
@@ -376,103 +376,83 @@ class PCSOLotto:
             )
 
 
-def execute_as_script():
-    '''
-    Allows the program to be executed in a command line environment.
+if __name__ == '__main__':
 
-    It parses the arguments / parameters then passes it to the constructor
-    which then executes the extraction.
+    parser = argparse.ArgumentParser(
+                    description='CLI tool for web scraping lottery '
+                                'results from the PCSO website',
+                    formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 
-    Do not use this function in a program,
-    construct an object from PCSOLotto class
-    then execute one of the results method.
-    '''
+    parser.add_argument(
+        'start_date',
+        type=str,
+        help='date to start searching. Format: YYYY/MM/DD')
+    parser.add_argument(
+        'end_date',
+        type=str,
+        help='date to end searching. Format: YYYY/MM/DD')
+    parser.add_argument(
+        '-d',
+        '--days',
+        type=str,
+        nargs='*',
+        help='days to select',
+        default=None)
+    parser.add_argument(
+        '-g',
+        '--games',
+        type=str,
+        nargs='*',
+        help='lotto games to search',
+        default=None)
+    parser.add_argument(
+        '-p',
+        '--peso_sign',
+        type=lambda x: (str(x).lower() == 'true'),
+        default=True,
+        help='to prefix a peso sign in the jackpot, or not')
+    parser.add_argument(
+        '-c',
+        '--csv',
+        type=str,
+        default=None,
+        help='csv file to output the results to'
+    )
+    parser.add_argument(
+        '-j',
+        '--json',
+        type=str,
+        default=None,
+        help='json file to output the results to'
+    )
 
-    if __name__ == '__main__':
+    args = parser.parse_args()
+    config = vars(args)
 
-        parser = argparse.ArgumentParser(
-                        description='CLI tool for web scraping lottery '
-                                    'results from the PCSO website',
-                        formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    lotto = PCSOLotto()
+    lotto.results(
+        start_date=config['start_date'],
+        end_date=config['end_date'],
+        days=config['days'],
+        games=config['games'],
+        peso_sign=config['peso_sign']
+    )
 
-        parser.add_argument(
-            'start_date',
-            type=str,
-            help='date to start searching. Format: YYYY/MM/DD')
-        parser.add_argument(
-            'end_date',
-            type=str,
-            help='date to end searching. Format: YYYY/MM/DD')
-        parser.add_argument(
-            '-d',
-            '--days',
-            type=str,
-            nargs='*',
-            help='days to select',
-            default=None)
-        parser.add_argument(
-            '-g',
-            '--games',
-            type=str,
-            nargs='*',
-            help='lotto games to search',
-            default=None)
-        parser.add_argument(
-            '-p',
-            '--peso_sign',
-            type=lambda x: (str(x).lower() == 'true'),
-            default=True,
-            help='to prefix a peso sign in the jackpot, or not')
-        parser.add_argument(
-            '-c',
-            '--csv',
-            type=str,
-            default=None,
-            help='csv file to output the results to'
-        )
-        parser.add_argument(
-            '-j',
-            '--json',
-            type=str,
-            default=None,
-            help='json file to output the results to'
-        )
+    # print the results in table format
+    print(lotto.results_table)
 
-        args = parser.parse_args()
-        config = vars(args)
+    # write results to csv file
+    if config['csv']:
+        with open(config['csv'], 'w', newline='') as csv_file:
+            csv_file.write(lotto.results_table.get_csv_string())
+            csv_file.close()
 
-        lotto = PCSOLotto()
-        lotto.results(
-            start_date=config['start_date'],
-            end_date=config['end_date'],
-            days=config['days'],
-            games=config['games'],
-            peso_sign=config['peso_sign']
-        )
-
-        # print the results in table format
-        print(lotto.results_table)
-
-        # write results to csv file
-        if config['csv']:
-            with open(config['csv'], 'w', newline='') as csv_file:
-                csv_file.write(lotto.results_table.get_csv_string())
-                csv_file.close()
-
-        # write results to json file
-        if config['json']:
-            with open(config['json'], 'w') as json_file:
-                json.dump(
-                    lotto.results_dict,
-                    json_file,
-                    indent=4,
-                    ensure_ascii=False)
-                json_file.close()
-
-    else:
-
-        print(f'{__name__}: {execute_as_script.__doc__}')
-        return
-
-
-execute_as_script()
+    # write results to json file
+    if config['json']:
+        with open(config['json'], 'w') as json_file:
+            json.dump(
+                lotto.results_dict,
+                json_file,
+                indent=4,
+                ensure_ascii=False)
+            json_file.close()

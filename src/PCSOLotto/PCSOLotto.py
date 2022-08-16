@@ -7,6 +7,7 @@ import requests
 import argparse
 from prettytable import PrettyTable
 import json
+from pprint import pprint
 
 
 class PCSOLotto:
@@ -324,7 +325,7 @@ class PCSOLotto:
         '''
 
         today = datetime.today()
-        print(f"Today's Date: {today}")
+        # print(f"Today's Date: {today.strftime('%Y/%m/%d')}")
 
         return self.results(
             start_date=today.strftime("%Y/%m/%d"),
@@ -345,7 +346,7 @@ class PCSOLotto:
 
         edate = datetime.today()
         sdate = edate - timedelta(days=1)
-        print(f"Yesterday's Date: {sdate}")
+        # print(f"Yesterday's Date: {sdate.strftime('%Y/%m/%d')}")
 
         return self.results(
             start_date=sdate.strftime("%Y/%m/%d"),
@@ -367,6 +368,8 @@ class PCSOLotto:
 
         edate = datetime.today()
         sdate = edate - timedelta(days=3)
+        # print(f"Today's Date: {edate.strftime('%Y/%m/%d')}")
+        # print(f"3 Days Ago Date: {sdate.strftime('%Y/%m/%d')}")
 
         return self.results(
             start_date=sdate.strftime("%Y/%m/%d"),
@@ -384,13 +387,35 @@ if __name__ == '__main__':
                     formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 
     parser.add_argument(
-        'start_date',
+        '-s',
+        '--start_date',
         type=str,
+        default=None,
         help='date to start searching. Format: YYYY/MM/DD')
     parser.add_argument(
-        'end_date',
+        '-e',
+        '--end_date',
         type=str,
+        default=None,
         help='date to end searching. Format: YYYY/MM/DD')
+    parser.add_argument(
+        '-t',
+        '--results_today',
+        default=False,
+        action='store_true',
+        help='retrieve lotto results today')
+    parser.add_argument(
+        '-y',
+        '--results_yesterday',
+        default=False,
+        action='store_true',
+        help='retrieve lotto results yesterday')
+    parser.add_argument(
+        '-z',
+        '--results_default_pcso',
+        default=False,
+        action='store_true',
+        help='retrieve lotto results from 3 days prior up to today')
     parser.add_argument(
         '-d',
         '--days',
@@ -416,43 +441,73 @@ if __name__ == '__main__':
         '--csv',
         type=str,
         default=None,
-        help='csv file to output the results to'
-    )
+        help='csv file to output the results to')
     parser.add_argument(
         '-j',
         '--json',
         type=str,
         default=None,
-        help='json file to output the results to'
-    )
+        help='json file to output the results to')
 
     args = parser.parse_args()
     config = vars(args)
 
+    # pprint(config)
+    arguments_sufficient = True
+
     lotto = PCSOLotto()
-    lotto.results(
-        start_date=config['start_date'],
-        end_date=config['end_date'],
-        days=config['days'],
-        games=config['games'],
-        peso_sign=config['peso_sign']
-    )
 
-    # print the results in table format
-    print(lotto.results_table)
+    if config['results_today']:
+        lotto.results_today(
+            config['games'],
+            config['peso_sign'])
+        arguments_sufficient = True
 
-    # write results to csv file
-    if config['csv']:
-        with open(config['csv'], 'w', newline='') as csv_file:
-            csv_file.write(lotto.results_table.get_csv_string())
-            csv_file.close()
+    elif config['results_yesterday']:
+        lotto.results_yesterday(
+            config['games'],
+            config['peso_sign'])
+        arguments_sufficient = True
 
-    # write results to json file
-    if config['json']:
-        with open(config['json'], 'w') as json_file:
-            json.dump(
-                lotto.results_dict,
-                json_file,
-                indent=4,
-                ensure_ascii=False)
-            json_file.close()
+    elif config['results_default_pcso']:
+        lotto.results_default_pcso(
+            config['games'],
+            config['peso_sign'])
+        arguments_sufficient = True
+
+    else:
+        if config['start_date'] is None:
+            print("start_date argument is empty")
+
+        elif config['end_date'] is None:
+            print("end_date argument is empty")
+
+        else:
+            lotto.results(
+                start_date=config['start_date'],
+                end_date=config['end_date'],
+                days=config['days'],
+                games=config['games'],
+                peso_sign=config['peso_sign'])
+            arguments_sufficient = True
+
+    if arguments_sufficient is True:
+
+        # print the results in table format
+        print(lotto.results_table)
+
+        # write results to csv file
+        if config['csv']:
+            with open(config['csv'], 'w', newline='') as csv_file:
+                csv_file.write(lotto.results_table.get_csv_string())
+                csv_file.close()
+
+        # write results to json file
+        if config['json']:
+            with open(config['json'], 'w') as json_file:
+                json.dump(
+                    lotto.results_dict,
+                    json_file,
+                    indent=4,
+                    ensure_ascii=False)
+                json_file.close()

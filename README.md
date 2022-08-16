@@ -33,9 +33,19 @@ Results are displayed in a tabular form.
 
 # display results 3 days prior up to today
 ./PCSOLotto.py -z
+
+# display results 3 days prior up to today AND export it to CSV file
+./PCSOLotto.py -z -c lotto_results.csv
 ```
 
 Note: Using -t --results_today, -y --results_yesterday, -z --results_default_pcso overrides the -s --start_date and -e --end_date
+
+
+
+Tip: You can export the search results to CSV and or JSON.
+
+For CSV, just append the -c --csv <csv_file_name>.csv <br>
+For JSON, append the -j --json <json_file_name>.json <br>
 
 ## Advanced Usage Examples
 
@@ -71,6 +81,9 @@ These arguments cannot be used together with -t --results_today, -y --results_ye
 # display results from Aug 1 2022 to Aug 10 2022
 # Note: the only accepted date format is YYYY/MM/DD
 ./PCSOLotto.py --start_date '2022/08/01' --end_date '2022/08/10'
+
+# you can also export to CSV and JSON
+./PCSOLotto.py --start_date '2022/08/01' --end_date '2022/08/10' -c results_csv.csv -j results_json.json
 
 # display 6/58 results from Aug 1 2022 to Aug 10 2022
 ./PCSOLotto.py --start_date '2022/08/01' --end_date '2022/08/10' --games '6/58'

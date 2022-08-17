@@ -2,6 +2,7 @@
 
 from bs4 import BeautifulSoup
 import calendar
+import pytz
 from datetime import datetime, timedelta
 import requests
 import argparse
@@ -324,7 +325,8 @@ class PCSOLotto:
         Check self.results for options explanation.
         '''
 
-        today = datetime.today()
+        tz = pytz.timezone("Asia/Manila")
+        today = datetime.today().astimezone(tz)
         # print(f"Today's Date: {today.strftime('%Y/%m/%d')}")
 
         return self.results(
@@ -344,7 +346,8 @@ class PCSOLotto:
         Check self.results for options explanation.
         '''
 
-        edate = datetime.today()
+        tz = pytz.timezone("Asia/Manila")
+        edate = datetime.today().astimezone(tz)
         sdate = edate - timedelta(days=1)
         # print(f"Yesterday's Date: {sdate.strftime('%Y/%m/%d')}")
 
@@ -366,7 +369,8 @@ class PCSOLotto:
         Check self.results for options explanation.
         '''
 
-        edate = datetime.today()
+        tz = pytz.timezone("Asia/Manila")
+        edate = datetime.today().astimezone(tz)
         sdate = edate - timedelta(days=3)
         # print(f"Today's Date: {edate.strftime('%Y/%m/%d')}")
         # print(f"3 Days Ago Date: {sdate.strftime('%Y/%m/%d')}")

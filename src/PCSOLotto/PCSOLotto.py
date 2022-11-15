@@ -15,7 +15,8 @@ class PCSOLotto:
 
     def __init__(
         self,
-        link: str = 'https://www.pcso.gov.ph/SearchLottoResult.aspx'
+        link: str = 'https://www.pcso.gov.ph/SearchLottoResult.aspx',
+        headers: str = "Mozilla/5.0 (Macintosh; Intel Mac OS X x.y; rv:10.0) Gecko/20100101 Firefox/10.0"
     ):
         self.__results_raw = []
         self.results_dict = {}
@@ -27,27 +28,31 @@ class PCSOLotto:
              'Jackpot (₱)',
              'Winners'])
         self.__link = link
+        self.__headers = headers
         self.games_list = {
             58: 'Ultra Lotto 6/58',
             55: 'Grand Lotto 6/55',
-            49: 'Super Lotto 6/49',
-            45: 'Mega Lotto 6/45',
+            49: 'Superlotto 6/49',
+            45: 'Megalotto 6/45',
             42: 'Lotto 6/42',
-            6: '6Digit',
-            4: '4Digit',
-            33: 'Suertres Lotto 11AM',
-            32: 'Suertres Lotto 4PM',
-            31: 'Suertres Lotto 9PM',
-            23: 'EZ2 Lotto 11AM',
-            22: 'EZ2 Lotto 4PM',
-            21: 'EZ2 Lotto 9PM'
+            6: '6D Lotto',
+            4: '4D Lotto',
+            33: '3D Lotto 2PM',
+            32: '3D Lotto 5PM',
+            31: '3D Lotto 9PM',
+            23: '2D Lotto 11AM',
+            22: '2D Lotto 4PM',
+            21: '2D Lotto 9PM'
         }
 
     def __download_page(self) -> BeautifulSoup:
         '''Retrieves the BeautifulSoup4 object that contains the page html'''
 
-        r = requests.get(self.__link)
+        r = requests.get(self.__link, headers={
+            'user-agent': self.__headers
+        })
         self.__soup = BeautifulSoup(r.text, 'html.parser')
+        # print(self.__soup.contents)
         return self.__soup
 
     def __get_asp_hidden_vals(self) -> dict:
@@ -58,6 +63,9 @@ class PCSOLotto:
             id='__VIEWSTATEGENERATOR')['value']
         self.__eventvalidation = self.__soup.find(
             id='__EVENTVALIDATION')['value']
+        # print(f"__viewstate: {self.__viewstate}")
+        # print(f"__viewstategenerator: {self.__viewstategenerator}")
+        # print(f"__eventvalidation: {self.__eventvalidation}")
         return {
             'VIEWSTATE': self.__viewstate,
             'VIEWSTATEGENERATOR': self.__viewstategenerator,
@@ -96,7 +104,9 @@ class PCSOLotto:
         (with the desired start and end date)
         '''
 
-        r = requests.post(self.__link, data)
+        r = requests.post(url=self.__link, data=data, headers={
+            'user-agent': self.__headers
+        })
         self.__soup = BeautifulSoup(r.text, 'html.parser')
         return self.__soup
 

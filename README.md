@@ -276,25 +276,27 @@ pprint(
 
 # Table-of-Games
 
-Note: 
-Using "Suertres" alone will match all draws that happen in 11AM, 4PM & 9PM 
+Tip: 
+Using "3D" alone will match all draws that happen in 11AM, 4PM & 9PM <br>
+So if you only want the 4PM draw, use "3D Lotto 4PM" instead.
 
-So if you only want the 4PM draw, use "Suertres Lotto 4PM" instead. The same concept applies for EZ2.
+Additionally, PCSO changes the name of the games on their website, causing this program to fail.<br>
+So if this program does not return any data, please [visit](https://www.pcso.gov.ph/SearchLottoResult.aspx) and look for the "Lotto Game" column to see the new games name, then try again.
 
 | Alias               	| Game Full Name      	|
 |---------------------	|---------------------	|
 | 6/58                	| Ultra Lotto 6/58    	|
 | 6/55                	| Grand Lotto 6/55    	|
-| 6/49                	| Super Lotto 6/49    	|
-| 6/45                	| Mega Lotto 6/45     	|
+| 6/49                	| Superlotto 6/49    	|
+| 6/45                	| Megalotto 6/45     	|
 | 6/42                	| Lotto 6/42          	|
-| 6Digit              	| 6Digit              	|
-| 4Digit              	| 4Digit              	|
-| Suetres             	| Suetres             	|
-| Suertres Lotto 11AM 	| Suertres Lotto 11AM 	|
-| Suertres Lotto 4PM  	| Suertres Lotto 4PM  	|
-| Suertres Lotto 9PM  	| Suertres Lotto 9PM  	|
-| EZ2                 	| EZ2 / 2Digit        	|
-| EZ2 Lotto 11AM      	| EZ2 Lotto 11AM      	|
-| EZ2 Lotto 4PM       	| EZ2 Lotto 4PM       	|
-| EZ2 Lotto 9PM       	| EZ2 Lotto 9PM       	|
+| 6D                  	| 6D Lotto             	|
+| 4D                  	| 4D Lotto             	|
+| 3D                 	| 3D Lotto             	|
+| 3D Lotto 11AM 	    | 3D Lotto 11AM 	    |
+| 3D Lotto 4PM  	    | 3D Lotto 4PM        	|
+| 3D Lotto 9PM  	    | 3D Lotto 9PM        	|
+| 2D                 	| 2D Lotto          	|
+| 2D Lotto 11AM      	| EZ2 Lotto 11AM      	|
+| 2D Lotto 4PM       	| EZ2 Lotto 4PM       	|
+| 2D Lotto 9PM       	| EZ2 Lotto 9PM       	|
